@@ -1,0 +1,12 @@
+numpy==1.26.4
+pandas==2.3.3
+scikit-learn==1.7.2
+scipy==1.11.4
+matplotlib==3.10.9
+openpyxl==3.1.5
+PyYAML==6.0.3
+joblib==1.6.0
+
+# Optional for the corresponding models or interpretation scripts:
+# xgboost>=2.0
+# shap>=0.44

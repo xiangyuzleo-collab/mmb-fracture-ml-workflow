@@ -1,0 +1,30 @@
+project:
+  name: MMB fracture research workflow
+  random_seed: 42
+
+# Relative paths are resolved from the repository root. Original experimental
+# files are private and are not included in this repository.
+paths:
+  raw_root: data/raw
+  main_workbook: data/raw/main_workbook.xlsx
+  corrected_results_workbook: data/raw/corrected_results.xlsx
+  correction_summary_workbook: data/raw/correction_summary.xlsx
+  physical_properties_workbook: data/raw/material_properties.xlsx
+  completed_calculation_dir: data/raw/计算完成的
+  press_machine_dir: data/raw/压力机原始数据
+  existing_figure_dir: data/raw/图片集
+  legacy_ml_dir: data/raw/旧模型
+
+data:
+  main_sheet: 汇总大表
+  parameter_sheet: 实验参数汇总
+
+validation:
+  repeated_random_split:
+    test_size: 0.20
+    n_repeats: 50
+  leave_one_lever_arm_out: {}
+
+figures:
+  dpi: 300
+  save_formats: [png, pdf]

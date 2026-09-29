@@ -1,0 +1,84 @@
+random_seed: 42
+save_fold_models:
+  repeated_random_split: false
+  leave_one_lever_arm_out: true
+
+models:
+  mean_predictor:
+    family: baseline
+    enabled: true
+    hyperparameters: {}
+  linear_regression:
+    family: baseline
+    enabled: true
+    hyperparameters: {}
+  polynomial_ridge:
+    family: baseline
+    enabled: true
+    hyperparameters:
+      degree: 2
+      alpha: 1.0
+  ridge_regression:
+    family: baseline
+    enabled: true
+    hyperparameters:
+      alpha: 1.0
+  lasso_regression:
+    family: baseline
+    enabled: true
+    hyperparameters:
+      alpha: 0.002
+      max_iter: 20000
+  svr:
+    family: classical_ml
+    enabled: true
+    hyperparameters:
+      kernel: rbf
+      C: 10.0
+      epsilon: 0.03
+      gamma: scale
+  random_forest:
+    family: classical_ml
+    enabled: true
+    hyperparameters:
+      n_estimators: 300
+      max_features: sqrt
+      min_samples_leaf: 2
+  extra_trees:
+    family: classical_ml
+    enabled: true
+    hyperparameters:
+      n_estimators: 400
+      max_features: sqrt
+      min_samples_leaf: 1
+  gradient_boosting:
+    family: classical_ml
+    enabled: true
+    hyperparameters:
+      n_estimators: 180
+      learning_rate: 0.04
+      max_depth: 2
+  xgboost:
+    family: classical_ml
+    enabled: true
+    optional_dependency: xgboost
+    hyperparameters:
+      n_estimators: 240
+      max_depth: 3
+      learning_rate: 0.04
+      subsample: 0.85
+      colsample_bytree: 0.85
+      reg_lambda: 2.0
+  gaussian_process:
+    family: gpr
+    enabled: true
+    hyperparameters: {}
+  mlp:
+    family: neural_network
+    enabled: true
+    hyperparameters:
+      hidden_layer_sizes: [32, 16]
+      alpha: 0.001
+      learning_rate_init: 0.001
+      max_iter: 1500
+      early_stopping: true

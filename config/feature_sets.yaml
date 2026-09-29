@@ -1,0 +1,85 @@
+feature_sets:
+  pre_test_design:
+    description: Experimental variables available before a test.
+    features:
+      - lever_arm_length
+      - span_length
+      - specimen_width
+      - specimen_thickness
+      - specimen_height
+      - initial_crack_length
+      - density
+      - moisture_content
+      - loading_rate
+      - direction_R
+      - direction_T
+      - E1_MPa
+      - E2_MPa
+      - E3_MPa
+      - G12_MPa
+      - G13_MPa
+
+  mechanics_dimensionless:
+    description: Mechanics-informed nondimensional geometry/material variables.
+    features:
+      - lever_arm_over_thickness
+      - lever_arm_over_span
+      - initial_crack_over_length
+      - initial_crack_over_thickness
+      - width_over_thickness
+      - height_over_thickness
+
+  experimental_response:
+    description: Response variables extracted during or after a test.
+    features:
+      - Pmax
+      - peak_end_displacement
+      - peak_mid_displacement
+      - peak_delta1
+      - peak_delta2
+      - initial_stiffness
+      - compliance
+      - area_load_end_displacement
+      - area_load_mid_displacement
+
+  fracture_mechanics:
+    description: Fracture variables. These are targets or target-derived variables for many tasks and must be excluded when they leak the target.
+    features:
+      - GI_raw
+      - GII_raw
+      - Gc_raw
+      - GI_GII_ratio
+      - GII_fraction
+      - GI_over_GIC
+      - GII_over_GIIC
+
+tasks:
+  task_A_pre_test:
+    description: Pre-test prediction from geometry, material constants and loading configuration.
+    feature_sets: [pre_test_design, mechanics_dimensionless]
+    targets: [Pmax, peak_displacement, GI_raw, GII_raw, Gc_raw, GI_GII_ratio, GII_fraction]
+
+  task_B_response_based:
+    description: Response-based prediction of fracture parameters from load-displacement descriptors.
+    feature_sets: [experimental_response]
+    targets: [GI_raw, GII_raw, Gc_raw, GI_GII_ratio, GII_fraction]
+
+  task_C_combined_safe:
+    description: Combined mechanics-informed prediction using only non-leaking design, dimensionless and response features.
+    feature_sets: [pre_test_design, mechanics_dimensionless, experimental_response]
+    targets: [GI_raw, GII_raw, Gc_raw, GI_GII_ratio, GII_fraction]
+
+target_derived_variables:
+  GI_raw: [Gc_raw, GI_GII_ratio, GII_fraction, GI_over_GIC]
+  GII_raw: [Gc_raw, GI_GII_ratio, GII_fraction, GII_over_GIIC]
+  Gc_raw: [GI_raw, GII_raw, GI_GII_ratio, GII_fraction, GI_over_GIC, GII_over_GIIC]
+  GI_GII_ratio: [GI_raw, GII_raw, Gc_raw, GII_fraction]
+  GII_fraction: [GI_raw, GII_raw, Gc_raw, GI_GII_ratio]
+
+always_exclude_from_inputs:
+  - specimen_id
+  - source_file
+  - source_sheet_row
+  - GI_calculated
+  - GII_calculated
+  - Gc_calculated
