@@ -68,6 +68,8 @@ in this copy. The artificial demo exercises the model-validation path only.
   from Git. Do not change that exclusion to publish experimental measurements.
 - Empty explanatory notebooks, local model binaries, plots, draft papers and
   unpublished result reports from the source directory were not copied.
-- The source project had no Git history; this repository does not imply earlier commits. The code included here is published with the owner's authorization.; this repository makes no claim about an
-  earlier Git history or about the authorship of every original line. Confirm
-  code ownership and collaborator permissions before publishing.
+- The source project had no Git history; this repository does not imply earlier
+  commits. The code included here is published with the owner's authorization.
+
+No license is provided. Public visibility does not grant permission to reuse
+the code.
