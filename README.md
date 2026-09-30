@@ -47,6 +47,9 @@ and report sample count, mean error, MAE and RMSE by direction and lever arm.
 The run also writes `run_manifest.json` with the synthetic-data checksum,
 selected models, random seed and package versions. This command does not need
 any private experiment files and rejects rows not labeled `synthetic_demo`.
+The example CSV can be reproduced with
+`.venv/bin/python scripts/generate_synthetic_data.py`; its toy target equation
+is unrelated to the original experimental measurements.
 
 To run the specimen-split checks against the public synthetic data:
 
