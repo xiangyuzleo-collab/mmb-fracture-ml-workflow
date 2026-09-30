@@ -40,6 +40,17 @@ class ValidationSelectionTests(unittest.TestCase):
                 )
             self.assertFalse(output.exists())
 
+    def test_unavailable_target_does_not_leave_partial_split_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "outputs"
+            with self.assertRaisesRegex(RuntimeError, "no metrics"):
+                run_validation(
+                    "repeated_random_split", only_models=["mean_predictor"],
+                    only_tasks=["task_A_pre_test"], only_targets=["Pmax"],
+                    dataset_path=self.dataset, output_root=output,
+                )
+            self.assertFalse(output.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

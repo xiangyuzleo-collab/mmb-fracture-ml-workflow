@@ -159,14 +159,7 @@ def run_validation(
         raise ValueError("No available models selected for validation")
 
     dirs = _strategy_dirs(strategy, output_root)
-    for path in dirs.values():
-        path.mkdir(parents=True, exist_ok=True)
-
     split_records = _split_records(df, strategy, n_repeats=n_repeats)
-    split_summary = summarize_splits(split_records)
-    split_summary.to_csv(dirs["splits"] / "split_summary.csv", index=False)
-    for split in split_records:
-        save_split(split, dirs["splits"] / f"{split['fold']}.json")
 
     metrics_rows = []
     pred_rows = []
@@ -263,6 +256,12 @@ def run_validation(
     predictions = pd.DataFrame(pred_rows)
     if metrics.empty:
         raise RuntimeError("Validation produced no metrics; check target availability and split sizes")
+    for path in dirs.values():
+        path.mkdir(parents=True, exist_ok=True)
+    split_summary = summarize_splits(split_records)
+    split_summary.to_csv(dirs["splits"] / "split_summary.csv", index=False)
+    for split in split_records:
+        save_split(split, dirs["splits"] / f"{split['fold']}.json")
     metrics_path = dirs["metrics"] / f"{strategy}_metrics.csv"
     predictions_path = dirs["predictions"] / f"{strategy}_predictions.csv"
     metrics.to_csv(metrics_path, index=False)
