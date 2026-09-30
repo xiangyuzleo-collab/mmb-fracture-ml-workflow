@@ -110,6 +110,26 @@ def _fit_predict(spec: ModelSpec, X_train: pd.DataFrame, y_train: pd.Series, X_t
     return estimator, np.asarray(estimator.predict(X_test), dtype=float)
 
 
+def _validate_selection(
+    model_cfg: dict,
+    feature_cfg: dict,
+    only_models: list[str] | None,
+    only_tasks: list[str] | None,
+    only_targets: list[str] | None,
+) -> None:
+    available = {
+        "models": set(model_cfg["models"]),
+        "tasks": set(feature_cfg["tasks"]),
+        "targets": {target for task in feature_cfg["tasks"].values() for target in task["targets"]},
+    }
+    for label, selected in (("models", only_models), ("tasks", only_tasks), ("targets", only_targets)):
+        if selected is not None and not selected:
+            raise ValueError(f"No {label} selected")
+        unknown = set(selected or []) - available[label]
+        if unknown:
+            raise ValueError(f"Unknown {label}: {', '.join(sorted(unknown))}")
+
+
 def run_validation(
     strategy: str,
     n_repeats: int | None = None,
@@ -123,6 +143,7 @@ def run_validation(
     cfg = read_yaml(config_dir() / "config.yaml")
     feature_cfg = read_yaml(config_dir() / "feature_sets.yaml")
     model_cfg = read_yaml(config_dir() / "model_config.yaml")
+    _validate_selection(model_cfg, feature_cfg, only_models, only_tasks, only_targets)
     seed = int(cfg["project"]["random_seed"])
     set_random_seed(seed)
 
@@ -134,6 +155,8 @@ def run_validation(
     specs = [s for s in specs if s.optional_dependency_available and s.estimator is not None]
     if unavailable:
         LOGGER.warning("Skipping optional unavailable models: %s", [s.name for s in unavailable])
+    if not specs:
+        raise ValueError("No available models selected for validation")
 
     dirs = _strategy_dirs(strategy, output_root)
     for path in dirs.values():
@@ -238,6 +261,8 @@ def run_validation(
 
     metrics = pd.DataFrame(metrics_rows)
     predictions = pd.DataFrame(pred_rows)
+    if metrics.empty:
+        raise RuntimeError("Validation produced no metrics; check target availability and split sizes")
     metrics_path = dirs["metrics"] / f"{strategy}_metrics.csv"
     predictions_path = dirs["predictions"] / f"{strategy}_predictions.csv"
     metrics.to_csv(metrics_path, index=False)
