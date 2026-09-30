@@ -25,6 +25,9 @@ The validation unit is a specimen. The source research workflow has additional
 checks and unpublished results that are intentionally absent here. This public
 code does not claim a validated predictor for unseen loading configurations or
 an experimentally verified optimum.
+Validation requires one row and one non-empty `specimen_id` per specimen; it
+rejects duplicate IDs to prevent the same specimen entering both sides of a
+row-based train/test split.
 
 ## Run the artificial-data demo
 
@@ -40,6 +43,12 @@ The command uses `examples/synthetic_specimens.csv` and runs three models on
 both validation strategies. It writes CSV metrics, predictions and split
 records under `outputs/synthetic_demo/`. The directory is ignored by Git.
 This command does not need any private experiment files.
+
+To run the specimen-split checks against the public synthetic data:
+
+```bash
+.venv/bin/python -m unittest discover -s tests
+```
 
 ## Use your own experimental data
 

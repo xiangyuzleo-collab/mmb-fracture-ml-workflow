@@ -18,7 +18,7 @@ from src.utils.logging_utils import get_logger
 from src.utils.metrics import metric_rows
 from src.utils.paths import config_dir, outputs_dir
 from src.utils.random_seed import set_random_seed
-from src.validation.cross_validation_utils import save_split, summarize_splits
+from src.validation.cross_validation_utils import require_specimen_level_rows, save_split, summarize_splits
 from src.validation.leave_one_lever_arm_out import leave_one_lever_arm_splits
 from src.validation.repeated_random_split import repeated_random_splits
 
@@ -127,6 +127,7 @@ def run_validation(
     set_random_seed(seed)
 
     df = load_modeling_dataset(dataset_path).reset_index(drop=True)
+    require_specimen_level_rows(df)
     data_hash = sha256_dataframe(df)
     specs = build_model_specs(model_cfg, random_seed=seed, only=only_models)
     unavailable = [s for s in specs if not s.optional_dependency_available]

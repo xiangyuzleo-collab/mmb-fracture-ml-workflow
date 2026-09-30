@@ -7,6 +7,22 @@ import pandas as pd
 from src.utils.io_utils import write_json
 
 
+def require_specimen_level_rows(df: pd.DataFrame) -> None:
+    """Reject repeated specimen rows before row-index-based train/test splitting."""
+    if "specimen_id" not in df.columns:
+        raise ValueError("Validation requires a specimen_id column")
+    specimen_ids = df["specimen_id"]
+    missing = specimen_ids.isna() | specimen_ids.astype(str).str.strip().eq("")
+    if missing.any():
+        raise ValueError("Validation requires a non-empty specimen_id for every row")
+    duplicated = specimen_ids.duplicated(keep=False)
+    if duplicated.any():
+        raise ValueError(
+            "Validation requires one row per specimen_id; repeated IDs could place "
+            "the same specimen in both training and test sets"
+        )
+
+
 def save_split(split: dict, path: str | Path) -> None:
     write_json(split, path)
 
