@@ -40,8 +40,10 @@ python3 -m venv .venv
 ```
 
 The command uses `examples/synthetic_specimens.csv` and runs three models on
-both validation strategies. It writes CSV metrics, predictions and split
-records under `outputs/synthetic_demo/`. The directory is ignored by Git.
+both validation strategies. It writes CSV metrics, predictions, split
+records and condition-level error summaries under `outputs/synthetic_demo/`.
+The directory is ignored by Git. Condition summaries use held-out predictions
+and report sample count, mean error, MAE and RMSE by direction and lever arm.
 The run also writes `run_manifest.json` with the synthetic-data checksum,
 selected models, random seed and package versions. This command does not need
 any private experiment files and rejects rows not labeled `synthetic_demo`.

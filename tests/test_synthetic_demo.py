@@ -34,7 +34,7 @@ class SyntheticDemoTests(unittest.TestCase):
         self.assertEqual(len(manifest["outputs"]), 2)
         for run in manifest["outputs"]:
             self.assertGreater(run["metric_rows"], 0)
-            for key in ("metrics", "predictions", "split_summary"):
+            for key in ("metrics", "predictions", "split_summary", "condition_errors"):
                 self.assertTrue(run[key].startswith("outputs/synthetic_demo/"))
                 self.assertTrue((root / run[key]).exists())
 

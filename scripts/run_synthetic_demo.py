@@ -13,6 +13,7 @@ from src.models.evaluate_models import run_validation
 from src.utils.io_utils import read_yaml, sha256_file, write_json
 from src.utils.paths import config_dir
 from src.utils.paths import project_root
+from src.validation.error_analysis import summarize_condition_errors
 
 
 def main() -> None:
@@ -38,12 +39,17 @@ def main() -> None:
         metrics = pd.read_csv(paths["metrics"])
         if metrics.empty:
             raise RuntimeError(f"No metrics produced for {strategy}")
+        predictions = pd.read_csv(paths["predictions"])
+        diagnostics_path = output / "diagnostics" / f"{strategy}_condition_errors.csv"
+        diagnostics_path.parent.mkdir(parents=True, exist_ok=True)
+        summarize_condition_errors(predictions).to_csv(diagnostics_path, index=False)
         recorded_outputs.append(
             {
                 "strategy": strategy,
                 "metrics": paths["metrics"].relative_to(root).as_posix(),
                 "predictions": paths["predictions"].relative_to(root).as_posix(),
                 "split_summary": paths["split_summary"].relative_to(root).as_posix(),
+                "condition_errors": diagnostics_path.relative_to(root).as_posix(),
                 "metric_rows": len(metrics),
             }
         )
