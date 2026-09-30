@@ -56,7 +56,7 @@ def _split_records(df: pd.DataFrame, strategy: str, n_repeats: int | None = None
             + "_c"
             + pd.to_numeric(df["lever_arm_length"], errors="coerce").astype("Int64").astype(str)
         )
-        return list(
+        records = list(
             repeated_random_splits(
                 df.index,
                 n_repeats=n_repeats or int(vcfg["n_repeats"]),
@@ -65,9 +65,14 @@ def _split_records(df: pd.DataFrame, strategy: str, n_repeats: int | None = None
                 strata=strata,
             )
         )
-    if strategy == "leave_one_lever_arm_out":
-        return list(leave_one_lever_arm_splits(df))
-    raise ValueError(f"Unknown validation strategy: {strategy}")
+    elif strategy == "leave_one_lever_arm_out":
+        records = list(leave_one_lever_arm_splits(df))
+    else:
+        raise ValueError(f"Unknown validation strategy: {strategy}")
+    for split in records:
+        split["train_specimen_ids"] = df.loc[split["train_indices"], "specimen_id"].astype(str).tolist()
+        split["test_specimen_ids"] = df.loc[split["test_indices"], "specimen_id"].astype(str).tolist()
+    return records
 
 
 def _metadata(

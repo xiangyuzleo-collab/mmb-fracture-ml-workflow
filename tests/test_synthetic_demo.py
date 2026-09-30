@@ -37,6 +37,15 @@ class SyntheticDemoTests(unittest.TestCase):
             for key in ("metrics", "predictions", "split_summary", "condition_errors"):
                 self.assertTrue(run[key].startswith("outputs/synthetic_demo/"))
                 self.assertTrue((root / run[key]).exists())
+            split_dir = (root / run["split_summary"]).parent
+            split_files = list(split_dir.glob("*.json"))
+            self.assertTrue(split_files)
+            for split_file in split_files:
+                split = json.loads(split_file.read_text())
+                train = set(split["train_specimen_ids"])
+                test = set(split["test_specimen_ids"])
+                self.assertFalse(train & test)
+                self.assertEqual(len(train | test), manifest["specimen_count"])
 
 
 if __name__ == "__main__":

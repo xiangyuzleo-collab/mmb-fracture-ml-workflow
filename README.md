@@ -44,6 +44,8 @@ both validation strategies. It writes CSV metrics, predictions, split
 records and condition-level error summaries under `outputs/synthetic_demo/`.
 The directory is ignored by Git. Condition summaries use held-out predictions
 and report sample count, mean error, MAE and RMSE by direction and lever arm.
+Each split JSON records both row indices and specimen IDs so the held-out
+specimens remain identifiable if a dataset is later reordered.
 The run also writes `run_manifest.json` with the synthetic-data checksum,
 selected models, random seed and package versions. This command does not need
 any private experiment files and rejects rows not labeled `synthetic_demo`.
